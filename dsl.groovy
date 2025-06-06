@@ -1,5 +1,5 @@
-ROOT_PROJECT = 'Tesla Android'
-GITHUB_ORG_NAME = 'tesla-android'
+ROOT_PROJECT = 'Tesla Android Internal'
+GITHUB_ORG_NAME = 'tesla-android-internal'
 FLUTTER_APP = 'flutter-app'
 
 FLUTTER_APP_CI_JOB_NAME = FLUTTER_APP + '-ci'
@@ -12,14 +12,6 @@ ANDROID_RPI4_CI_JOB_NAME = ANDROID_RPI4 + '-ci'
 ANDROID_RPI4_CI_JOB_DISPLAY_NAME = ANDROID_RPI4 + ' (CI)'
 ANDROID_RPI4_RELEASE_JOB_NAME = ANDROID_RPI4 + '-release-and-tag'
 ANDROID_RPI4_RELEASE_JOB_DISPLAY_NAME = ANDROID_RPI4 + ' (release and tag)'
-
-AMLOGIC_GITHUB_PROJECT = 'android-amlogic'
-ANDROID_RADXA_ZERO = 'android-radxa_zero'
-ANDROID_RADXA_ZERO_CI_JOB_NAME = ANDROID_RADXA_ZERO + '-ci'
-ANDROID_RADXA_ZERO_CI_JOB_DISPLAY_NAME = ANDROID_RADXA_ZERO + ' (CI)'
-ANDROID_RADXA_ZERO_RELEASE_JOB_NAME = ANDROID_RADXA_ZERO + '-release-and-tag'
-ANDROID_RADXA_ZERO_RELEASE_JOB_DISPLAY_NAME = ANDROID_RADXA_ZERO + ' (release and tag)'
-
 
 folder(ROOT_PROJECT) {
     description('Folder containing all jobs for ' + ROOT_PROJECT)
@@ -97,44 +89,6 @@ pipelineJob(ROOT_PROJECT + '/' + ANDROID_RPI4_RELEASE_JOB_NAME) {
     definition {
         cps {
         	script(readFileFromWorkspace('android-rpi4-release-and-tag.groovy'))
-        }
-    }
-}
-
-multibranchPipelineJob(ROOT_PROJECT + '/' + ANDROID_RADXA_ZERO_CI_JOB_NAME) {
-    displayName(ANDROID_RADXA_ZERO_CI_JOB_DISPLAY_NAME)
-    branchSources {
-        github {
-            id(ROOT_PROJECT + '/' + ANDROID_RADXA_ZERO_CI_JOB_NAME)
-            repoOwner(GITHUB_ORG_NAME)
-            repository(AMLOGIC_GITHUB_PROJECT)
-            scanCredentialsId('tesla-android-jenkins')
-            includes('*') 
-        }
-    }
-            
-    triggers {
-        cron('*/5 * * * *')
-    }
-    orphanedItemStrategy {
-        discardOldItems {
-            daysToKeep(90)
-            numToKeep(180)
-        }
-    }
-    factory {
-        workflowBranchProjectFactory {
-            scriptPath('jenkins/multi-branch-ci.groovy')
-        }
-    }
-}
-         
-pipelineJob(ROOT_PROJECT + '/' + ANDROID_RADXA_ZERO_RELEASE_JOB_NAME) {
-    displayName(ANDROID_RADXA_ZERO_RELEASE_JOB_DISPLAY_NAME)
-    keepDependencies(false)
-    definition {
-        cps {
-                script(readFileFromWorkspace('android-radxa_zero-release-and-tag.groovy'))
         }
     }
 }
